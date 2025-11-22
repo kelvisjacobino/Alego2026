@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PLANO DE 11 SEMANAS – ALEGO | ASSISTENTE DE TI (DINÂMICO)</title>
+<style>
+  /* ============================================================
+   ROOT + BASE
+============================================================ */
+:root{
+    --bg:#0b1220;
+    --card:#121a2b;
+    --muted:#9fb3ce;
+    --text:#eaf2ff;
+    --acc1:#5aa9ff;
+    --acc2:#7c4dff;
+    --acc3:#00d4ff;
+    --gold:#ffc857;
+    --subject4:#ffc857;
+}
+*{box-sizing:border-box}
+html,body{
+    margin:0;
+    background:
+        radial-gradient(1200px 600px at 10% -10%, #1a2540 0%, transparent 60%),
+        radial-gradient(1000px 500px at 110% 10%, #1d1b36 0%, transparent 60%),
+        var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans',sans-serif
+}
+a{color:var(--gold);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+.wrap{max-width:1100px;margin:40px auto;padding:0 20px}
+header{display:grid;gap:18px}
+.title{
+    background:linear-gradient(135deg,var(--acc1),var(--acc2));
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+    font-weight:800;
+    font-size:clamp(26px,6vw,40px)
+}
+.badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 10px;border-radius:12px;
+    background:#0f1627;color:var(--muted);
+    border:1px solid #1f2a45;font-size:13px
+}
+.grid{display:grid;gap:16px}
+.g-4{grid-template-columns:repeat(4,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-2{grid-template-columns:repeat(2,1fr)}
+
+@media (max-width:900px){.g-4,.g-3,.g-2{grid-template-columns:1fr}}
+@media (max-width:600px){header{padding:10px} .title{font-size:clamp(22px,7vw,32px)}}
+
+.card{
+    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+    border:1px solid #1f2a45;
+    border-radius:18px;
+    padding:18px;
+    position:relative;
+    overflow:hidden
+}
+.card::after{
+    content:"";position:absolute;
+    inset:auto -30% -30% auto;
+    width:220px;height:220px;
+    background:radial-gradient(closest-side,rgba(122,84,255,.22),transparent 70%);
+    filter:blur(8px)
+}
+.meta{display:flex;flex-wrap:wrap;gap:10px;color:var(--muted);font-size:14px}
+.divider{height:1px;background:#1f2a45;margin:14px 0}
+
+.progress{
+    height:10px;background:#0e1526;border-radius:999px;
+    border:1px solid #1f2a45;overflow:hidden;margin-top:10px
+}
+.progress>span{
+    display:block;height:100%;border-radius:999px;
+    background:linear-gradient(90deg,var(--acc1),var(--acc3));
+    width:0;transition:width .8s ease
+}
+
+/* ============================================================
+   CHECKLIST
+============================================================ */
+ul{list-style:none;padding:0;margin:8px 0 0}
+li{margin-bottom:6px;display:flex;align-items:flex-start}
+li label{display:flex;cursor:pointer;flex-grow:1;padding:4px 0}
+li input[type=checkbox]{
+    margin-right:10px;margin-top:2px;
+    cursor:pointer;width:16px;height:16px;flex-shrink:0
+}
+.completed{color:var(--muted);text-decoration:line-through}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.btn{
+    border:1px solid #27385f;
+    background:#111a2c;
+    color:var(--text);
+    padding:10px 14px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.2s
+}
+.btn:hover{background:#0e1526}
+.btn.emph{
+    background:linear-gradient(135deg,var(--acc2),var(--acc1));
+    border-color:transparent
+}
+.update-note{font-size:12px;color:var(--gold);margin-top:10px;text-align:center}
+
+/* ============================================================
+   TABS PRINCIPAIS (SEMANAS)
+============================================================ */
+.tab-buttons {
+    display: flex;
+    gap: 4px;
+    padding-right: 40px;
+    overflow-x: auto;
+    scrollbar-width: none;
+        margin-left: 0px;  
+}
+
+.tab-buttons::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* espaço invisível no final */
+.tab-buttons::after{
+    content:"";
+    flex:0 0 80px;
+}
+
+.tab-btn{
+    flex-shrink:0;
+    background:#0e1628;
+    color:var(--muted);
+    border:1px solid #1f2a45;
+    padding:4px 6px;
+    border-radius:8px 8px 0 0;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s ease
+}
+.tab-btn:hover{background:#111a2c}
+.tab-btn.active{
+    background:var(--card);
+    color:var(--text);
+    border-color:var(--acc1);
+    border-bottom:none;
+    padding-bottom:12px
+}
+
+/* escondida pelo carrossel automático */
+.tab-btn.hidden{
+    opacity:0;
+    transform:translateX(-40px);
+    pointer-events:none;
+    width:0;margin:0;padding:0;border:none
+}
+
+/* ============================================================
+   ÁREA DAS SEMANAS
+============================================================ */
+.tab-content{
+    background:var(--card);
+    border:1px solid #1f2a45;
+    border-top:none;
+    padding:20px;
+    border-radius:0 0 18px 18px
+}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+.tab-pane h2{
+    border-bottom:2px solid #1f2a45;
+    padding-bottom:10px;margin-top:0
+}
+
+/* ============================================================
+   SUB-TABS (Dias da Semana)
+============================================================ */
+.sub-tabs-container{
+    margin-top:15px;
+    border-bottom:1px solid #1f2a45;
+    display:flex;gap:10px;
+    overflow-x:auto;white-space:nowrap
+}
+.sub-tabs-container::-webkit-scrollbar{display:none}
+
+.sub-tab-btn{
+    flex-shrink:0;background:#1f2a45;
+    color:var(--muted);
+    border:none;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.2s
+}
+.sub-tab-btn.active{
+    background:var(--acc1);
+    color:var(--text);
+    font-weight:600
+}
+
+.sub-tab-pane{display:none;margin-top:15px}
+.sub-tab-pane.active{display:block}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer{color:var(--muted);font-size:12px;margin:30px 0 10px;text-align:center}
+.path-note{
+    color:var(--gold);
+    font-size:12px;
+    margin-bottom:15px;
+    background:rgba(255,200,87,.1);
+    padding:10px;border-radius:8px;
+    text-align:center
+}
+
+/* ============================================================
+   MOBILE
+============================================================ */
+@media (max-width:480px){
+  .btn{width:100%}
+  .tab-btn{padding:8px 10px;font-size:13px}
+  .sub-tab-btn{padding:6px 8px;font-size:12px}
+  .card{padding:14px}
+  .meta{font-size:12px}
+}
+
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="card">
+      <div>
+        <div class="badge">Plano de Estudos · Concurso ALEGO</div>
+        <h1 class="title">PLANO DE 11 SEMANAS – ALEGO (Assistente de Suporte em TI)</h1>
+        <div class="meta">
+          <span class="pill">Banca: FGV (Foco Total)</span>
+          <span class="pill">Meta: 90 pontos | Domínio: 4/10</span>
+          <span class="pill">Prazo Final: 08/02/2026</span>
+        </div>
+        <div class="divider"></div>
+        
+        <div class="actions">
+            <button class="btn emph" id="updateButton" onclick="fetchMaterials()">Atualizar Materiais (Links)</button>
+            <button class="btn" onclick="voltarSemana()">🔙 Voltar Semana</button>
+
+        </div>
+        <div id="status-message" class="update-note" style="display:none;">
+            Aguardando a atualização dos links...
+        </div>
+      </div>
+    </header>
+    
+    <div class="path-note">
+        ⚙️ **AUTOMAÇÃO:** Foco no Concurso.
+    </div>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="sem1">Semana 1 (24/11)</button>
+      <button class="tab-btn" data-tab="sem2">Sem 2 (01/12)</button>
+      <button class="tab-btn" data-tab="sem3">Sem 3 (08/12)</button>
+      <button class="tab-btn" data-tab="sem4">Sem 4 (15/12)</button>
+      <button class="tab-btn" data-tab="sem5">Sem 5 (22/12)</button>
+      <button class="tab-btn" data-tab="sem6">Sem 6 (29/12)</button>
+      <button class="tab-btn" data-tab="sem7">Sem 7 (05/01)</button>
+      <button class="tab-btn" data-tab="sem8">Sem 8 (12/01)</button>
+      <button class="tab-btn" data-tab="sem9">Sem 9 (19/01)</button>
+      <button class="tab-btn" data-tab="sem10">Sem 10 (26/01)</button>
+      <button class="tab-btn" data-tab="sem11">Sem 11 (02/02)</button>
+      
+    </div>
+
+    <div class="tab-content">
+
+      <script type="text/template" id="weekly-plan-template">
+        <div class="sub-tabs-container" id="sub-tabs-{{week}}">
+            <button class="sub-tab-btn active" data-sub-tab="{{week}}-dia1">Segunda</button>
+            <button class="sub-tab-btn" data-sub-tab="{{week}}-dia2">Terça</button>
+            <button class="sub-tab-btn" data-sub-tab="{{week}}-dia3">Quarta</button>
+            <button class="sub-tab-btn" data-sub-tab="{{week}}-dia4">Quinta</button>
+            <button class="sub-tab-btn" data-sub-tab="{{week}}-dia5">Sexta</button>
+            <button class="sub-tab-btn" data-sub-tab="{{week}}-dia6">Sábado (Intensivo)</button>
+            <button class="sub-tab-btn" data-sub-tab="{{week}}-dia7">Domingo (Descanso)</button>
+        </div>
+        
+
+        <div id="{{week}}-dia1" class="sub-tab-pane active">
+            <h2>{{week_title}}: Dia 1 — TI (2h)</h2>
+            <section class="grid g-3">
+              <div class="card">
+                <h3>Tópicos Sugeridos</h3>
+                <p class="meta">Prioridade Alta</p>
+                <div class="progress" data-pct="40"><span style="width: 40%;"></span></div>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-ti-arq"> Arquitetura de Computadores / Hardware</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-ti-os"> Sistemas Operacionais</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-ti-redes"> Redes (TCP/IP, DNS, DHCP, NAT)</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-ti-seg"> Segurança da Informação</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Estrutura de Estudo (120 minutos)</h3>
+                <p class="meta">Dividir o tempo entre os tópicos acima</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-estrutura-teoria"> 40 min — Teoria (tópico do edital)</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-estrutura-questoes"> 50 min — Questões FGV</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-seg-estrutura-revisao"> 30 min — Revisão ativa / flashcards</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Materiais de Estudo (TI)</h3>
+                <div id="materiais-ti-{{week}}"></div> </div>
+            </section>
+        </div>
+
+        <div id="{{week}}-dia2" class="sub-tab-pane">
+            <h2>{{week_title}}: Dia 2 — Português (2h)</h2>
+            <section class="grid g-3">
+              <div class="card">
+                <h3>Tópicos Sugeridos</h3>
+                <p class="meta">Foco em compreensão e coesão</p>
+                <div class="progress" data-pct="50"><span style="width: 50%;"></span></div>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-port-tema"> Tema, tese e argumento</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-port-inf"> Inferência / pressupostos</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-port-pont"> Pontuação lógica</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-port-conec"> Conectores</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-port-coesao"> Coesão / ambiguidade</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-port-re"> Reescrita preservando sentido</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Estrutura de Estudo (120 minutos)</h3>
+                <p class="meta">Teoria com muita prática</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-estrutura-teoria"> 30 min — Teoria (interpretação / gramática lógica)</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-estrutura-ex"> 40 min — Exemplos explicados</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-ter-estrutura-questoes"> 40–50 min — Questões FGV comentadas</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Materiais de Estudo (Português)</h3>
+                <div id="materiais-portugues-{{week}}"></div> </div>
+            </section>
+        </div>
+
+        <div id="{{week}}-dia3" class="sub-tab-pane">
+            <h2>{{week_title}}: Dia 3 — Raciocínio Lógico (2h)</h2>
+            <section class="grid g-3">
+              <div class="card">
+                <h3>Tópicos Sugeridos</h3>
+                <p class="meta">Foco em lógica proposicional</p>
+                <div class="progress" data-pct="30"><span style="width: 30%;"></span></div>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-rlm-prop"> Proposições</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-rlm-tab"> Tabelas-verdade</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-rlm-eq"> Equivalências</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-rlm-neg"> Negação</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-rlm-arg"> Argumentos lógicos</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-rlm-pv"> Problemas verbais transformados em lógica</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Estrutura de Estudo (120 minutos)</h3>
+                <p class="meta">Prática Intensa</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-estrutura-teoria"> 30 min — Teoria</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-estrutura-ex"> 60 min — Exercícios comentados</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qua-estrutura-rev"> 30 min — Revisão</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Materiais de Estudo (RL)</h3>
+                <div id="materiais-raciocinio logico-{{week}}"></div> </div>
+            </section>
+        </div>
+
+        <div id="{{week}}-dia4" class="sub-tab-pane">
+            <h2>{{week_title}}: Dia 4 — Legislação de Goiás / Realidade de Goiás (2h)</h2>
+            <section class="grid g-2">
+              <div class="card">
+                <h3>Tópicos Sugeridos</h3>
+                <p class="meta">Foco na Constituição e História</p>
+                <div class="progress" data-pct="40"><span style="width: 40%;"></span></div>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-leg-ce"> Constituição Estadual</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-leg-org"> Organização do Estado</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-leg-pod"> Poderes</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-leg-realidade"> Realidade histórica, social, étnica e cultural de Goiás</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Estrutura de Estudo (120 minutos)</h3>
+                <p class="meta">Leitura e Questões de Fixação</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-estrutura-teoria"> 50 min — Teoria literal</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-estrutura-questoes"> 40 min — Questões</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-qui-estrutura-rev"> 30 min — Revisão</label></li>
+                </ul>
+              </div>
+            </section>
+        </div>
+
+        <div id="{{week}}-dia5" class="sub-tab-pane">
+            <h2>{{week_title}}: Dia 5 — TI (Reforço) – 2h</h2>
+            <section class="grid g-3">
+              <div class="card">
+                <h3>Foco do Reforço</h3>
+                <p class="meta">Prática e consolidação de pontos fracos</p>
+                <div class="progress" data-pct="40"><span style="width: 40%;"></span></div>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-sex-ti-questoes"> 1h — Questões FGV (Priorizar erros da semana)</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-sex-ti-teoria"> 30 min — Teoria complementar (Assuntos não vistos)</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-sex-ti-mapas"> 30 min — Mapas mentais e revisão</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Verificação Semanal</h3>
+                <p class="meta">Organização para o Sábado Intensivo</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-sex-verif-ti"> Revisar os flashcards de TI da Segunda-feira</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-sex-verif-erros"> Compilar 10 questões erradas para refazer no Sábado</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-sex-verif-materiais"> Organizar todos os materiais para o dia intensivo</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Materiais de Estudo (TI)</h3>
+                <div id="materiais-ti-reforco-{{week}}"></div> </div>
+            </section>
+        </div>
+        <div id="{{week}}-dia6" class="sub-tab-pane">
+    <h2>{{week_title}}: Dia 6 — Estudo Intensivo (3–4 horas)</h2>
+    <section class="grid g-4">
+      
+        <div class="card">
+            <h3>1ª Hora: Português</h3>
+            <p class="meta">Foco em performance e análise</p>
+            <ul>
+                <li><label><input type="checkbox" data-key="{{week}}-sab-port-questoes"> 10 questões FGV + correção estratégica</label></li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>2ª Hora: TI</h3>
+            <p class="meta">Revisão de pontos fracos</p>
+            <ul>
+                <li><label><input type="checkbox" data-key="{{week}}-sab-ti-questoes"> 12–15 questões + revisão de pontos fracos</label></li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>3ª Hora: Raciocínio Lógico</h3>
+            <p class="meta">Refazer erros</p>
+            <ul>
+                <li><label><input type="checkbox" data-key="{{week}}-sab-rlm-questoes"> 10 questões + refação dos erros da semana</label></li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h3>Extra: Legislação (30 min)</h3>
+            <p class="meta">Leitura rápida</p>
+            <ul>
+                <li><label><input type="checkbox" data-key="{{week}}-sab-leg-questoes"> 6–8 questões de Legislação / Realidade de Goiás</label></li>
+                <li><label><input type="checkbox" data-key="{{week}}-sab-leg-leitura"> Leitura rápida dos pontos essenciais</label></li>
+            </ul>
+        </div>
+        
+    </section>
+</div>
+      
+        <div id="{{week}}-dia7" class="sub-tab-pane">
+            <h2>{{week_title}}: Dia 7 — Descanso Ativo (Opcional 20 min)</h2>
+            <section class="grid g-2">
+              <div class="card">
+                <h3>Prioridades</h3>
+                <p class="meta">Sem pressão</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-dom-rev"> Revisão leve</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-dom-flash"> Flashcards</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-dom-descanso"> Desconexão e descanso</label></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>Meta da Semana</h3>
+                <p class="meta">Concluir todos os 6 dias de estudo</p>
+                <ul>
+                  <li><label><input type="checkbox" data-key="{{week}}-dom-meta-conc"> Meta semanal de estudo atingida</label></li>
+                  <li><label><input type="checkbox" data-key="{{week}}-dom-meta-prox"> Preparar material para a próxima semana</label></li>
+                </ul>
+              </div>
+            </section>
+        </div>
+      </script>
+
+      <div id="sem1" class="tab-pane active"></div>
+      <div id="sem2" class="tab-pane"></div>
+      <div id="sem3" class="tab-pane"></div>
+      <div id="sem4" class="tab-pane"></div>
+      <div id="sem5" class="tab-pane"></div>
+      <div id="sem6" class="tab-pane"></div>
+      <div id="sem7" class="tab-pane"></div>
+      <div id="sem8" class="tab-pane"></div>
+      <div id="sem9" class="tab-pane"></div>
+      <div id="sem10" class="tab-pane"></div>
+      <div id="sem11" class="tab-pane"></div>
+    </div> 
+    
+    <footer>Plano otimizado. O progresso é salvo automaticamente no seu navegador.</footer>
+  </div>
+<script>
+/* ============================
+   Config / Dados iniciais
+   ============================ */
+const SERVER_URL = 'http://conguito.ddns.net:8083';
+
+const weekTitles = [
+  "Semana 1 (24/11)","Semana 2 (01/12)","Semana 3 (08/12)","Semana 4 (15/12)",
+  "Semana 5 (22/12)","Semana 6 (29/12)","Semana 7 (05/01)","Semana 8 (12/01)",
+  "Semana 9 (19/01)","Semana 10 (26/01)","Semana 11 (02/02 - Final)"
+];
+
+const TOTAL_WEEKS = 11;
+
+/* ============================
+   Controle de visibilidade
+   ============================ */
+/**
+ * Atualiza quais botões de semana aparecem.
+ * Lógica:
+ * - semanas com index < semanaAtual ficam escondidas, exceto a "ativa" (se o usuário clicou manualmente)
+ * - semanas >= semanaAtual ficam visíveis
+ */
+function atualizarVisibilidadeSemanas() {
+  const semanaAtual = parseInt(localStorage.getItem('semanaAtual') || '1', 10);
+  const activeTab = localStorage.getItem('activeTab') || 'sem1';
+  const ativa = parseInt(activeTab.replace('sem',''), 10);
+
+  document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+    const idxSemana = idx + 1;
+
+    // Se for anterior à semanaAtual e NÃO for a ativa -> ocultar
+    if (idxSemana < semanaAtual && idxSemana !== ativa) {
+      btn.classList.add('hidden');
+    } else {
+      btn.classList.remove('hidden');
+    }
+  });
+}
+function voltarSemana() {
+    let atual = parseInt(localStorage.getItem("semanaAtual") || "1");
+
+    // Não deixar ir para semana zero
+    if (atual > 1) {
+        atual = atual - 1;
+        localStorage.setItem("semanaAtual", atual);
+
+        // Força reexibir as semanas
+        atualizarVisibilidadeSemanas();
+
+        // Abre automaticamente a semana anterior
+        openTab("sem" + atual);
+    } else {
+        alert("Você já está na primeira semana.");
+    }
+}
+
+
+/* ============================
+   Persistência e checkboxes
+   ============================ */
+function saveProgress(key, isChecked) {
+  localStorage.setItem(key, isChecked ? 'checked' : 'unchecked');
+}
+function loadProgress() {
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const key = cb.dataset.key;
+    const state = localStorage.getItem(key);
+    cb.checked = state === 'checked';
+    updateItemStyle(cb);
+  });
+}
+function updateItemStyle(checkbox) {
+  const label = checkbox.closest('label');
+  if (label) {
+    if (checkbox.checked) label.classList.add('completed');
+    else label.classList.remove('completed');
+  }
+}
+function initCheckboxes() {
+  loadProgress();
+  document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', (event) => {
+      const key = event.target.dataset.key;
+      saveProgress(key, event.target.checked);
+      updateItemStyle(event.target);
+
+      // Se o usuário quiser manter avanço automático via checkbox 'dom-meta-conc'
+      if (key.includes('dom-meta-conc') && event.target.checked) {
+        let atual = parseInt(localStorage.getItem('semanaAtual') || '1', 10);
+        atual = Math.min(atual + 1, TOTAL_WEEKS);
+        localStorage.setItem('semanaAtual', atual);
+        atualizarVisibilidadeSemanas();
+        openTab('sem' + atual);
+      }
+    });
+  });
+}
+
+/* ============================
+   Navegação entre semanas e dias
+   ============================ */
+function openTab(tabName) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+  const pane = document.getElementById(tabName);
+  const button = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+  if (!pane || !button) return;
+
+  pane.classList.add('active');
+  button.classList.add('active');
+
+  // salva aba ativa e atualiza visibilidade (para permitir "voltar")
+  localStorage.setItem('activeTab', tabName);
+  atualizarVisibilidadeSemanas();
+
+  // abre sub-aba salva (se houver)
+  const activeSub = localStorage.getItem('activeSubTab-' + tabName) || (tabName + '-dia1');
+  openSubTab(activeSub);
+}
+
+function openSubTab(tabName) {
+  const weekId = tabName.split('-')[0];
+  const weekContainer = document.getElementById(weekId);
+  if (!weekContainer) return;
+
+  weekContainer.querySelectorAll('.sub-tab-pane').forEach(p => p.classList.remove('active'));
+  weekContainer.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+
+  const pane = document.getElementById(tabName);
+  const btn = weekContainer.querySelector(`.sub-tab-btn[data-sub-tab="${tabName}"]`);
+  if (!pane || !btn) return;
+
+  pane.classList.add('active');
+  btn.classList.add('active');
+  localStorage.setItem('activeSubTab-' + weekId, tabName);
+}
+
+/* ============================
+   API: listar e injetar materiais
+   ============================ */
+async function fetchMaterials() {
+  const statusDiv = document.getElementById('status-message');
+  statusDiv.style.display = 'block';
+  statusDiv.style.color = ''; // reset
+  statusDiv.innerHTML = 'Conectando ao servidor...';
+
+  try {
+    const res = await fetch(`${SERVER_URL}/listar`);
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const data = await res.json();
+    if (data.erro) throw new Error(data.mensagem || 'Erro do servidor');
+
+    statusDiv.innerHTML = 'Arquivos listados. Injetando links...';
+    injectMaterials(data.pastas);
+
+    statusDiv.innerHTML = 'Atualização concluída! Recarregando...';
+    setTimeout(() => window.location.reload(), 800);
+  } catch (err) {
+    statusDiv.style.color = '#ff4d4d';
+    statusDiv.innerHTML = `ERRO ao conectar (${SERVER_URL}). Detalhes: ${err.message}`;
+  }
+}
+
+function injectMaterials(pastas) {
+  const buildLinks = slug => {
+    const p = pastas[slug];
+    if (!p || !p.arquivos || p.arquivos.length === 0) return '<ul><li>Nenhum arquivo PDF encontrado.</li></ul>';
+    return '<ul>' + p.arquivos.map(a => `<li><a href="${SERVER_URL}${a.caminho}" target="_blank">${a.nome.replace(/\.pdf$/i,'')}</a></li>`).join('') + '</ul>';
+  };
+
+  const injectionPoints = {
+    'ti': ['materiais-ti','materiais-ti-reforco','materiais-ti-sabado'],
+    'portugues': ['materiais-portugues','materiais-portugues-sabado'],
+    'raciociniologico': ['materiais-raciocinio logico','materiais-raciocinio logico-sabado']
+  };
+
+  Object.entries(injectionPoints).forEach(([slug, prefixes]) => {
+    const html = buildLinks(slug);
+    prefixes.forEach(prefix => {
+      for (let i = 1; i <= TOTAL_WEEKS; i++) {
+        const el = document.getElementById(`${prefix}-sem${i}`);
+        if (el) el.innerHTML = html;
+      }
+    });
+  });
+}
+
+/* ============================
+   Botão "Concluir Semana" (delegação)
+   ============================ */
+document.addEventListener('click', (evt) => {
+  const btn = evt.target.closest('.concluir-semana-btn');
+  if (!btn) return;
+
+  const weekId = btn.dataset.week; // ex: 'sem3'
+  if (!weekId) return;
+
+  const concluded = parseInt(weekId.replace('sem',''), 10);
+  let atual = parseInt(localStorage.getItem('semanaAtual') || '1', 10);
+
+  // Avança para concluded+1, mas nunca regredirá semanaAtual se já estiver adiantado
+  const novo = Math.min(Math.max(atual, concluded + 1), TOTAL_WEEKS);
+  localStorage.setItem('semanaAtual', novo);
+
+  // torna a próxima semana ativa
+  const prox = Math.min(concluded + 1, TOTAL_WEEKS);
+  openTab('sem' + prox);
+  atualizarVisibilidadeSemanas();
+});
+
+/* ============================
+   Inicialização do plano
+   ============================ */
+function initializePlan() {
+  const template = document.getElementById('weekly-plan-template').innerHTML;
+
+  for (let i = 1; i <= TOTAL_WEEKS; i++) {
+    const weekId = 'sem' + i;
+    let content = template.replace(/{{week}}/g, weekId).replace(/{{week_title}}/g, weekTitles[i-1]);
+    const container = document.getElementById(weekId);
+    if (container) container.innerHTML = content;
+  }
+
+  // barras de progresso visuais
+  document.querySelectorAll('.progress').forEach(el => {
+    const pct = parseFloat(el.dataset.pct || '0');
+    requestAnimationFrame(() => {
+      const span = el.querySelector('span');
+      if (span) span.style.width = pct + '%';
+    });
+  });
+
+  // click em tab principal
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      openTab(tab);
+      localStorage.setItem('activeTab', tab);
+      atualizarVisibilidadeSemanas();
+    });
+  });
+
+  // click em sub-tabs (dias) - delegação
+  document.querySelector('.tab-content').addEventListener('click', (event) => {
+    const t = event.target.closest('.sub-tab-btn');
+    if (t) openSubTab(t.dataset.subTab);
+  });
+
+  const activeTab = localStorage.getItem('activeTab') || 'sem1';
+  openTab(activeTab);
+
+  initCheckboxes();
+
+  // injeta materiais (botão também chama essa função)
+  fetchMaterials();
+}
+
+/* ============================
+   Disparo inicial após DOM
+   ============================ */
+document.addEventListener('DOMContentLoaded', () => {
+  // garante que existam as tabs no DOM antes de executar
+  initializePlan();
+  atualizarVisibilidadeSemanas();
+});
+</script>
+
+
+ 
+
+</body>
+</html>

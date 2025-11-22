@@ -1,0 +1,6 @@
+{
+  "ambiente": "producao",
+  "porta": 8083,
+  "host_lan": "192.168.0.210",
+  "host_ddns": "conguito.ddns.net"
+}
