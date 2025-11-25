@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards — Questões Erradas</title>
+<style>
+body {
+    margin:0;
+    background:#0b0f14;
+    color:#eaf2ff;
+    font-family:Inter, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.card {
+    background:#101823;
+    padding:28px;
+    border-radius:14px;
+    width:90%;
+    max-width:600px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+h2 { margin-top:0 }
+.alt {
+    padding:12px;
+    background:#0d141e;
+    border-radius:8px;
+    margin-bottom:10px;
+}
+.correct { background:#1e4425; }
+.wrong   { background:#442525; }
+.btns { margin-top:20px; display:flex; justify-content:space-between; }
+button {
+    padding:10px 14px;
+    border:0;
+    border-radius:8px;
+    background:#5aa9ff;
+    color:#041d33;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:hover { background:#00d0ff; }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2 id="titulo">Flashcards</h2>
+    <p id="enunciado"></p>
+
+    <div id="alternativas"></div>
+
+    <div class="btns">
+        <button id="btnAnterior">⬅ Anterior</button>
+        
+        <button id="btnProximo">Próximo ➡</button>
+    </div>
+</div>
+
+<script>
+let flashcards = JSON.parse(localStorage.getItem("flashcardsErradasFGV") || "[]");
+let i = 0;
+
+// Botões
+const enunciado = document.getElementById("enunciado");
+const alternativasDiv = document.getElementById("alternativas");
+
+function render() {
+    if (flashcards.length === 0) {
+        enunciado.textContent = "Nenhuma questão errada!";
+        alternativasDiv.innerHTML = "";
+        return;
+    }
+
+    const q = flashcards[i];
+    document.getElementById("titulo").textContent = "Questão " + q.numero;
+    enunciado.textContent = q.enunciado;
+
+    alternativasDiv.innerHTML = "";
+
+    for (let letra in q.alternativas) {
+        const div = document.createElement("div");
+        div.className = "alt";
+        div.textContent = letra + ") " + q.alternativas[letra];
+
+        if (div.textContent.startsWith(q.correta)) {
+            div.classList.add("correct");
+        }
+        if (q.escolhida && letra === q.escolhida && q.escolhida !== q.correta) {
+            div.classList.add("wrong");
+        }
+
+        alternativasDiv.appendChild(div);
+    }
+}
+
+// Navegação
+function render() {
+    if (flashcards.length === 0) {
+        enunciado.textContent = "Nenhuma questão errada!";
+        alternativasDiv.innerHTML = "";
+        document.getElementById("btnAnterior").style.display = "none";
+        document.getElementById("btnProximo").style.display = "none";
+        document.getElementById("btnMostrar").style.display = "none";
+        return;
+    }
+
+    const q = flashcards[i];
+    document.getElementById("titulo").textContent = "Questão " + q.numero;
+    enunciado.textContent = q.enunciado;
+
+    alternativasDiv.innerHTML = "";
+
+    for (let letra in q.alternativas) {
+        const div = document.createElement("div");
+        div.className = "alt";
+        div.textContent = letra + ") " + q.alternativas[letra];
+
+        if (letra === q.correta) div.classList.add("correct");
+        if (letra === q.escolhida && q.escolhida !== q.correta) div.classList.add("wrong");
+
+        alternativasDiv.appendChild(div);
+    }
+
+    // Exibir / ocultar botões conforme posição
+    const btnAnterior = document.getElementById("btnAnterior");
+    const btnProximo  = document.getElementById("btnProximo");
+    const btnMostrar  = document.getElementById("btnMostrar");
+
+    // Primeira questão → esconde anterior
+    btnAnterior.style.display = (i === 0) ? "none" : "inline-block";
+
+    // Se NÃO é a última → botão Próximo normal
+    if (i < flashcards.length - 1) {
+        btnProximo.textContent = "Próximo ➡";
+        btnProximo.onclick = () => { i++; render(); };
+    } 
+    // Se for a última → vira botão Fechar
+    else {
+        btnProximo.textContent = "Fechar";
+        btnProximo.onclick = () => window.close();
+    }
+}
+
+
+// Mostrar resposta (destacar correta e a escolhida)
+
+
+// Render inicial
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simulado FGV – TI</title>
+
+  <!-- Link para o CSS (vou gerar em seguida) -->
+  <link rel="stylesheet" href="simulados.css">
+
+  <style>
+    /* Pequena proteção visual até você adicionar o arquivo CSS real */
+    :root {
+      --bg: #0b0f14;
+      --card: #0f1720;
+      --muted: #9fb3ce;
+      --accent: #5aa9ff;
+      --text: #eaf2ff;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{background:linear-gradient(180deg,#061018 0%, #071826 100%);color:var(--text);display:flex;align-items:stretch;}
+    .app {display:flex;flex:1;min-height:100vh;}
+    .sidebar {width:300px;background:rgba(255,255,255,0.02);padding:20px;box-sizing:border-box;border-right:1px solid rgba(255,255,255,0.03);}
+    .main {flex:1;padding:20px;box-sizing:border-box;overflow:auto;}
+    .logo {font-weight:700;margin-bottom:18px;font-size:18px}
+    .btn {display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;background:var(--accent);color:#042033}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+    .controls {display:flex;flex-direction:column;gap:10px;}
+    .meta {color:var(--muted);font-size:13px;margin-bottom:12px}
+    .timer {font-size:28px;font-weight:700;margin-top:6px}
+    .nav-questions {display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+    .nav-questions button{width:36px;height:36px;border-radius:6px;border:0;background:rgba(255,255,255,0.03);color:var(--text)}
+    .question-card{background:var(--card);padding:18px;border-radius:12px;box-shadow: 0 6px 18px rgba(2,6,23,0.6)}
+    .alternativas {display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .alt-btn {padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);text-align:left;cursor:pointer}
+    .footer-actions {display:flex;gap:10px;align-items:center;margin-top:16px}
+    .stats {margin-top:18px;color:var(--muted);font-size:14px}
+    /* responsivo */
+    @media (max-width:900px){
+      .sidebar{display:none}
+      .app{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Painel de controle do simulado">
+      <div class="logo">Simulado FGV – TI</div>
+      <div class="meta">Interface de prova — carregue seu simulado e gabarito (JSON)</div>
+
+      <div class="controls">
+        <label class="btn ghost" for="simulado-file">📁 Carregar Simulado (JSON)</label>
+        <input id="simulado-file" type="file" accept=".json" style="display:none" />
+
+        <label class="btn ghost" for="gabarito-file">🗂️ Carregar Gabarito (JSON)</label>
+        <input id="gabarito-file" type="file" accept=".json" style="display:none" />
+
+        <button id="btnStart" class="btn" disabled>▶️ Iniciar Prova</button>
+
+        <div style="margin-top:12px">
+          <div class="meta">Tempo</div>
+          <div id="timer" class="timer">00:00:00</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="meta">Navegação</div>
+          <div id="navQuestions" class="nav-questions">
+            <!-- botões de 1..N serão gerados pelo JS -->
+          </div>
+        </div>
+
+        <div class="stats" id="quickStats">
+          Nenhum simulado carregado.
+        </div>
+      </div>
+
+      <div style="position:absolute;bottom:18px;left:20px;right:20px;color:var(--muted);font-size:12px">
+        Dica: carregue o arquivo do simulado e o gabarito para habilitar o botão.
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main" id="mainArea">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h1 style="margin:0">Simulado FGV – TI</h1>
+        <div style="display:flex;gap:10px">
+          <button id="btnFullscreen" class="btn ghost">🖵 Tela Cheia</button>
+          <button id="btnModoEstudo" class="btn ghost" disabled>📘 Modo Estudo</button>
+        </div>
+      </div>
+
+      <div id="contentArea">
+        <!-- Antes de carregar: instruções -->
+        <div id="placeholder" class="question-card">
+          <h2>Carregar simulado</h2>
+          <p class="meta">Use os botões à esquerda para carregar o arquivo do simulado e o gabarito (formato JSON).</p>
+          <p class="meta">Formato de exemplo suportado (cada questão tem numero, enunciado, alternativas em A..E). Vou criar o JS para ler seu formato real (igual ao simulado01.json enviado).</p>
+        </div>
+
+        <!-- Área onde as questões serão renderizadas -->
+        <div id="simuladoArea" style="margin-top:16px"></div>
+
+        <!-- Estatísticas finais (escondidas até o fim) -->
+        <div id="resultsArea" style="margin-top:22px;display:none">
+          <div class="question-card">
+            <h2>Resultado</h2>
+            <div id="summary"></div>
+            <canvas id="radarChart" width="480" height="320"></canvas>
+            <div style="margin-top:12px">
+              <button id="btnReviewWrong" class="btn ghost">Rever somente erradas</button>
+              <button id="btnReset" class="btn">Reiniciar Simulado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script principal (vou gerar simulados.js em seguida) -->
+  <script src="simulados.js"></script>
+
+  <!-- Pequeno snippet para fazer fallback visual caso simulados.js ainda não exista -->
+  <script>
+    // Fallback UX: se o JS principal não estiver presente, mostre instruções simples
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!window.SIMULADOR_LOADED) {
+        const quick = document.getElementById('quickStats');
+        quick.textContent = 'Aguardando carregamento do script do simulador...';
+      }
+    });
+  </script>
+</body>
+</html>

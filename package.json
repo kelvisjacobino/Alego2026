@@ -11,5 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "express": "^5.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelvisjacobino/Alego2026.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kelvisjacobino/Alego2026/issues"
+  },
+  "homepage": "https://github.com/kelvisjacobino/Alego2026#readme"
 }

@@ -1,0 +1,183 @@
+{
+  "simulado_1": {
+    "prova": "SIMULADO 1 — Assistente de Suporte em TI",
+    "questoes": [
+      {
+        "numero": 1,
+        "enunciado": "A eficiência administrativa não se alcança apenas com tecnologia, mas com processos bem definidos e pessoas capacitadas. Assinale a alternativa que apresenta a ideia central do texto.",
+        "alternativas": {
+          "A": "A tecnologia é insuficiente para garantir eficiência.",
+          "B": "A capacitação é mais importante que a tecnologia.",
+          "C": "Processos não influenciam na eficiência organizacional.",
+          "D": "A eficiência depende exclusivamente de tecnologia.",
+          "E": "A tecnologia é dispensável para eficiência."
+        }
+      },
+      {
+        "numero": 2,
+        "enunciado": "Assinale a opção em que o trecho destaca causa.",
+        "alternativas": {
+          "A": "Ele estudou muito, por isso foi aprovado.",
+          "B": "Apesar do esforço, não passou.",
+          "C": "Estudou pouco; ainda assim, foi bem.",
+          "D": "Se estudar, será aprovado.",
+          "E": "Estudou, mas não acertou tudo."
+        }
+      },
+      {
+        "numero": 3,
+        "enunciado": "Sobre o emprego da vírgula, assinale a alternativa correta.",
+        "alternativas": {
+          "A": "A vírgula pode separar sujeito e verbo.",
+          "B": "A vírgula marca termo deslocado.",
+          "C": "A vírgula é obrigatória antes de oração subordinada substantiva.",
+          "D": "A vírgula sempre marca enumeração.",
+          "E": "Não se usa vírgula em aposto explicativo."
+        }
+      },
+      {
+        "numero": 4,
+        "enunciado": "A frase gramaticalmente correta é:",
+        "alternativas": {
+          "A": "Fazem cinco anos que estudo.",
+          "B": "Houveram problemas no edital.",
+          "C": "Deve haver candidatos suficientes.",
+          "D": "Precisam-se de técnicos capacitados.",
+          "E": "Existem-se vagas a preencher."
+        }
+      },
+      {
+        "numero": 5,
+        "enunciado": "Assinale a alternativa que apresenta ambiguidade típica da FGV.",
+        "alternativas": {
+          "A": "O diretor informou ao assistente a mudança do sistema.",
+          "B": "Ele revisou o relatório ontem.",
+          "C": "Os servidores chegaram atrasados.",
+          "D": "A equipe corrigiu os erros.",
+          "E": "O sistema estava lento."
+        }
+      },
+      {
+        "numero": 6,
+        "enunciado": "Assinale o período com concordância verbal correta.",
+        "alternativas": {
+          "A": "Haviam muitas filas.",
+          "B": "Fazem meses que estudo TI.",
+          "C": "Deve existir soluções imediatas.",
+          "D": "Existem candidatos preparados.",
+          "E": "Precisam-se técnicos para suporte."
+        }
+      },
+      {
+        "numero": 7,
+        "enunciado": "Sobre regência verbal, assinale a alternativa correta.",
+        "alternativas": {
+          "A": "Aspirar o cargo = desejar o cargo.",
+          "B": "Visar o servidor = mirar o servidor.",
+          "C": "Assistir ao treinamento = ajudar no treinamento.",
+          "D": "Obedecer ao chefe = obedecer o chefe.",
+          "E": "Preferir café do que chá."
+        }
+      },
+      {
+        "numero": 8,
+        "enunciado": "O termo destacado exerce função de adjunto adverbial em: 'O sistema caiu ontem'.",
+        "alternativas": {
+          "A": "Ontem.",
+          "B": "Sistema.",
+          "C": "Caiu.",
+          "D": "O.",
+          "E": "Nenhuma das anteriores."
+        }
+      },
+      {
+        "numero": 9,
+        "enunciado": "Assinale a oração subordinada adverbial.",
+        "alternativas": {
+          "A": "O técnico, que chegou cedo, iniciou o backup.",
+          "B": "Quando o servidor reiniciar, teste o acesso.",
+          "C": "O manual que recebi está atualizado.",
+          "D": "O relatório que fiz foi enviado.",
+          "E": "A instrução que segui funcionou."
+        }
+      },
+      {
+        "numero": 10,
+        "enunciado": "Considere as proposições P: 'O sistema está lento.' e Q: 'O técnico foi acionado.' Assinale a negação de P → Q.",
+        "alternativas": {
+          "A": "P ∧ ¬Q",
+          "B": "¬P ∨ Q",
+          "C": "¬P ∧ Q",
+          "D": "¬P ∨ ¬Q",
+          "E": "P ∨ ¬Q"
+        }
+      },
+      {
+        "numero": 11,
+        "enunciado": "A tabela verdade de ¬(P ∧ Q) é equivalente a:",
+        "alternativas": {
+          "A": "¬P ∧ ¬Q",
+          "B": "¬P ∨ ¬Q",
+          "C": "P → Q",
+          "D": "¬P ↔ Q",
+          "E": "¬P → Q"
+        }
+      },
+      {
+        "numero": 12,
+        "enunciado": "Se 'Todos os técnicos são capacitados', então:",
+        "alternativas": {
+          "A": "Existe técnico não capacitado.",
+          "B": "Nenhum técnico é capacitado.",
+          "C": "Alguns técnicos não são capacitados.",
+          "D": "Todo técnico é capacitado.",
+          "E": "Alguns técnicos são capacitados."
+        }
+      },
+      {
+        "numero": 13,
+        "enunciado": "A negação correta de 'Alguns servidores não têm acesso' é:",
+        "alternativas": {
+          "A": "Nenhum servidor tem acesso.",
+          "B": "Todos têm acesso.",
+          "C": "Alguns têm acesso.",
+          "D": "Nenhum tem acesso parcial.",
+          "E": "Existe servidor com acesso."
+        }
+      },
+      {
+        "numero": 14,
+        "enunciado": "Dada a proposição 'Se o backup falhar, então o sistema não reinicia', assinale a contrapositiva.",
+        "alternativas": {
+          "A": "Se o sistema reinicia, o backup falhou.",
+          "B": "Se o sistema reinicia, o backup não falhou.",
+          "C": "Se o backup não falhar, o sistema reinicia.",
+          "D": "Se o sistema não reinicia, o backup falhou.",
+          "E": "Se o sistema reinicia, o backup travou."
+        }
+      },
+      {
+        "numero": 15,
+        "enunciado": "A economia goiana se destaca principalmente pela força de:",
+        "alternativas": {
+          "A": "Mineração e agronegócio.",
+          "B": "Pecuária e petróleo.",
+          "C": "Indústria naval.",
+          "D": "Turismo e pesca.",
+          "E": "Setor têxtil."
+        }
+      },
+      {
+        "numero": 16,
+        "enunciado": "Segundo a Constituição do Estado de Goiás, é correto afirmar:",
+        "alternativas": {
+          "A": "Os municípios possuem autonomia financeira.",
+          "B": "O Estado não pode legislar sobre ICMS.",
+          "C": "Não existe Tribunal de Contas.",
+          "D": "A segurança pública é de competência exclusiva da União.",
+          "E": "O Estado é proibido de criar autarquias."
+        }
+      }
+    ]
+  }
+}

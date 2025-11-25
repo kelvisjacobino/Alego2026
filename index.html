@@ -259,6 +259,11 @@ footer{color:var(--muted);font-size:12px;margin:30px 0 10px;text-align:center}
         <div class="actions">
             <button class="btn emph" id="updateButton" onclick="fetchMaterials()">Atualizar Materiais (Links)</button>
             <button class="btn" onclick="voltarSemana()">🔙 Voltar Semana</button>
+             <a href="simulados.html" target="_blank" class="btn btn-primary btn-simulado"> 📝 Simulados</a>
+
+
+
+    </button
 
         </div>
         <div id="status-message" class="update-note" style="display:none;">
@@ -393,7 +398,7 @@ footer{color:var(--muted);font-size:12px;margin:30px 0 10px;text-align:center}
 
         <div id="{{week}}-dia4" class="sub-tab-pane">
             <h2>{{week_title}}: Dia 4 — Legislação de Goiás / Realidade de Goiás (2h)</h2>
-            <section class="grid g-2">
+            <section class="grid g-3">
               <div class="card">
                 <h3>Tópicos Sugeridos</h3>
                 <p class="meta">Foco na Constituição e História</p>
@@ -414,8 +419,13 @@ footer{color:var(--muted);font-size:12px;margin:30px 0 10px;text-align:center}
                   <li><label><input type="checkbox" data-key="{{week}}-qui-estrutura-rev"> 30 min — Revisão</label></li>
                 </ul>
               </div>
+              <div class="card">
+                <h3>Legislação de Goiás</h3>
+                <div id="materiais-legislacao-{{week}}"></div> </div>
             </section>
         </div>
+            
+      
 
         <div id="{{week}}-dia5" class="sub-tab-pane">
             <h2>{{week_title}}: Dia 5 — TI (Reforço) – 2h</h2>
@@ -523,6 +533,34 @@ footer{color:var(--muted);font-size:12px;margin:30px 0 10px;text-align:center}
     
     <footer>Plano otimizado. O progresso é salvo automaticamente no seu navegador.</footer>
   </div>
+  
+
+
+<!-- 2) painel da aba (colocar dentro de .tab-content) -->
+<div id="simulados" style="display:none;">
+  <div class="card">
+    <h2>Simulados</h2>
+    <p class="meta">Carregue um simulado e o gabarito para iniciar a prova.</p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+      <button class="btn" id="load-simulado-btn">Carregar Simulado (arquivo)</button>
+      <input type="file" id="simulado-file" accept=".json" style="display:none">
+  
+      <button class="btn" id="load-gabarito-btn">Carregar Gabarito (arquivo)</button>
+      <input type="file" id="gabarito-file" accept=".json" style="display:none">
+  
+      <button class="btn emph" id="start-simulado-btn" disabled>Iniciar Prova</button>
+    </div>
+
+    <div id="simulado-status" class="update-note" style="margin-top:12px;">
+      Nenhum simulado carregado.
+    </div>
+  </div>
+
+  <div id="simulado-area" style="margin-top:18px"></div>
+</div>
+
+
 <script>
 /* ============================
    Config / Dados iniciais
@@ -680,8 +718,9 @@ async function fetchMaterials() {
     statusDiv.innerHTML = 'Arquivos listados. Injetando links...';
     injectMaterials(data.pastas);
 
-    statusDiv.innerHTML = 'Atualização concluída! Recarregando...';
-    setTimeout(() => window.location.reload(), 800);
+    // 🔥 Removido o reload — aqui estava o loop!
+    statusDiv.innerHTML = 'Atualização concluída!';
+    
   } catch (err) {
     statusDiv.style.color = '#ff4d4d';
     statusDiv.innerHTML = `ERRO ao conectar (${SERVER_URL}). Detalhes: ${err.message}`;
@@ -698,7 +737,11 @@ function injectMaterials(pastas) {
   const injectionPoints = {
     'ti': ['materiais-ti','materiais-ti-reforco','materiais-ti-sabado'],
     'portugues': ['materiais-portugues','materiais-portugues-sabado'],
-    'raciociniologico': ['materiais-raciocinio logico','materiais-raciocinio logico-sabado']
+    'raciociniologico': ['materiais-raciocinio logico','materiais-raciocinio logico-sabado'],
+    'legislacaodegoias': ['materiais-legislacao','materiais-legislacao-sabado']
+
+
+
   };
 
   Object.entries(injectionPoints).forEach(([slug, prefixes]) => {
@@ -790,7 +833,290 @@ document.addEventListener('DOMContentLoaded', () => {
   initializePlan();
   atualizarVisibilidadeSemanas();
 });
+
+/* ===========================
+   Simulados — Loader + Runner
+   =========================== */
+
+/*
+  Paths/URLs dos arquivos já enviados (substitua se necessário)
+  Esses caminhos existem no ambiente onde você subiu os arquivos:
+*/
+
+
+let currentSimulado = null;
+let currentGabarito = null;
+let respostasUsuario = {}; // { "1": "A", ... }
+
+/* Helpers */
+function el(html){ const d = document.createElement('div'); d.innerHTML = html; return d.firstElementChild; }
+
+async function fetchJson(pathOrFile) {
+  // se for File (upload) lido localmente
+  if (pathOrFile instanceof File) {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => {
+        try { res(JSON.parse(r.result)); } catch(e){ rej(e); }
+      };
+      r.onerror = rej;
+      r.readAsText(pathOrFile, 'utf-8');
+    });
+  }
+  // senão faz fetch do path (assume que o servidor exponha esse arquivo)
+  const resp = await fetch(pathOrFile);
+  if (!resp.ok) throw new Error('Falha ao carregar ' + pathOrFile + ' (status ' + resp.status + ')');
+  return resp.json();
+}
+
+/* Render do simulado */
+function renderSimulado(simuladoObj) {
+  const area = document.getElementById('simulado-area');
+  area.innerHTML = ''; respostasUsuario = {};
+
+  const header = document.createElement('div');
+  header.className = 'card';
+  header.style.marginBottom = '12px';
+  header.innerHTML = `<h3>${simuladoObj.prova || 'Simulado'}</h3>
+    <p class="meta">Questões: ${simuladoObj.questoes.length} — marque apenas 1 alternativa por questão.</p>`;
+  area.appendChild(header);
+
+  const form = document.createElement('form');
+  form.id = 'simulado-form';
+  form.style.display = 'grid';
+  form.style.gap = '12px';
+
+  simuladoObj.questoes.forEach(q => {
+    const qcard = document.createElement('div');
+    qcard.className = 'card';
+    let html = `<strong>Questão ${q.numero}</strong>
+      <p style="margin:8px 0 12px">${q.enunciado}</p>
+      <div>`;
+    Object.entries(q.alternativas).forEach(([k, txt]) => {
+      html += `<label style="display:block;margin-bottom:6px;cursor:pointer">
+        <input type="radio" name="q${q.numero}" value="${k}" data-q="${q.numero}" />
+        <span style="margin-left:8px">${k}. ${txt}</span>
+      </label>`;
+    });
+    html += '</div>';
+    qcard.innerHTML = html;
+    form.appendChild(qcard);
+  });
+  document.getElementById("btn-simulados").addEventListener("click", function () {
+    const area = document.getElementById("simulados");
+    
+    // Alterna entre mostrar e esconder
+    if (area.style.display === "none" || area.style.display === "") {
+        area.style.display = "block";
+        // Faz scroll até a área
+        area.scrollIntoView({ behavior: "smooth" });
+    } else {
+        area.style.display = "none";
+    }
+});
+
+  // botões de ação
+  const actions = document.createElement('div');
+  actions.className = 'card';
+  actions.style.display = 'flex';
+  actions.style.gap = '8px';
+  actions.style.alignItems = 'center';
+  actions.innerHTML = `
+    <button type="button" class="btn emph" id="corrigir-btn">Finalizar Prova / Corrigir</button>
+    <button type="button" class="btn" id="limpar-btn">Limpar respostas</button>
+    <div id="resultado-simulado" style="margin-left:12px;color:var(--gold)"></div>
+  `;
+  form.appendChild(actions);
+
+  area.appendChild(form);
+
+  // listeners das radios
+  form.addEventListener('change', (ev) => {
+    const target = ev.target;
+    if (target.name && target.name.startsWith('q')) {
+      const q = target.dataset.q;
+      respostasUsuario[q] = target.value;
+    }
+  });
+
+  // corrigir
+  document.getElementById('corrigir-btn').addEventListener('click', () => {
+    try {
+      if (!currentGabarito) { alert('Gabarito não carregado. Importe o gabarito antes de corrigir.'); return; }
+      corrigirSimulado(simuladoObj, currentGabarito);
+    } catch (e) {
+      alert('Erro ao corrigir: ' + e.message);
+    }
+  });
+
+  document.getElementById('limpar-btn').addEventListener('click', () => {
+    form.reset();
+    respostasUsuario = {};
+    document.getElementById('resultado-simulado').innerHTML = '';
+    // remove classes de destaque
+    form.querySelectorAll('.questao-correta, .questao-errada').forEach(n => {
+      n.classList.remove('questao-correta','questao-errada');
+    });
+  });
+}
+
+/* Correção: compara com gabarito e destaca */
+function corrigirSimulado(simuladoObj, gabaritoObj) {
+  const g = gabaritoObj.gabarito || gabaritoObj.respostas || gabaritoObj; // aceita vários formatos
+  const total = simuladoObj.questoes.length;
+  let acertos = 0;
+  const form = document.getElementById('simulado-form');
+
+  simuladoObj.questoes.forEach(q => {
+    const qnum = String(q.numero);
+    const correto = g[qnum];
+    const marcado = respostasUsuario[qnum] || null;
+
+    // destacar bloco da questão
+    // o card é o elemento .card correspondente: achar por texto "Questão N"
+    const qcard = Array.from(form.querySelectorAll('.card')).find(c => {
+      return c.querySelector && c.querySelector('strong') && c.querySelector('strong').textContent.includes('Questão ' + qnum);
+    });
+    if (!qcard) return;
+
+    // reset classes
+    qcard.classList.remove('questao-correta','questao-errada');
+
+    // marca alternativas corretas/erradas visualmente
+    // percorre labels e aplica estilos inline
+    qcard.querySelectorAll('label').forEach(lbl => {
+      lbl.style.background = 'transparent';
+      const input = lbl.querySelector('input');
+      if (!input) return;
+      const val = input.value;
+      // remover marcações anteriores
+      lbl.style.border = 'none';
+      lbl.style.padding = '0';
+      // realçar
+      if (val === correto) {
+        lbl.style.outline = '2px solid rgba(30,200,100,0.15)';
+        lbl.style.borderRadius = '6px';
+      } else {
+        lbl.style.outline = 'none';
+      }
+      // se marcado e errado -> vermelho leve
+      if (input.checked && val !== correto) {
+        lbl.style.background = 'rgba(255,77,77,0.06)';
+        lbl.style.outline = '2px solid rgba(255,77,77,0.08)';
+        qcard.classList.add('questao-errada');
+      }
+    });
+
+    if (marcado === correto) {
+      acertos++;
+      qcard.classList.add('questao-correta');
+      qcard.style.boxShadow = '0 4px 18px rgba(26,196,126,0.06)';
+    } else {
+      qcard.classList.add('questao-errada');
+      qcard.style.boxShadow = '0 4px 18px rgba(255,77,77,0.04)';
+    }
+  });
+
+  const pct = Math.round((acertos / total) * 100);
+  document.getElementById('resultado-simulado').innerHTML = `Resultado: ${acertos}/${total} — ${pct}%`;
+  // scroll para resultado
+  document.getElementById('resultado-simulado').scrollIntoView({behavior:'smooth'});
+}
+
+/* =============================
+   Inicialização dos botões
+   ============================= */
+(function initSimuladosUI(){
+  const simBtn = document.getElementById('load-simulado-btn');
+  const simInput = document.getElementById('simulado-file');
+  const gabBtn = document.getElementById('load-gabarito-btn');
+  const gabInput = document.getElementById('gabarito-file');
+  const startBtn = document.getElementById('start-simulado-btn');
+  const status = document.getElementById('simulado-status');
+
+  simBtn.addEventListener('click', () => simInput.click());
+  gabBtn.addEventListener('click', () => gabInput.click());
+
+  simInput.addEventListener('change', async (e)=>{
+    const f = e.target.files[0];
+    if (!f) return;
+    try {
+      const json = await fetchJson(f);
+      // se JSON vier aninhado (ex: { "simulado_1": { ... } }) pega o primeiro filho
+      const root = json.simulado_1 || Object.values(json)[0] || json;
+      currentSimulado = root;
+      status.innerHTML = `Simulado carregado: ${root.prova || 'Sem título'} (${root.questoes.length} questões)`;
+      startBtn.disabled = false;
+      renderSimulado(root);
+    } catch (err) {
+      alert('Erro ao ler arquivo de simulado: ' + err.message);
+    }
+  });
+
+  gabInput.addEventListener('change', async (e)=>{
+    const f = e.target.files[0];
+    if (!f) return;
+    try {
+      const json = await fetchJson(f);
+      // aceita formatos: { gabarito_1: { respostas: {...} } } ou { simulado_1: { gabarito: {...} } }
+      const root = json.gabarito_1 || json.simulado_1 || Object.values(json)[0] || json;
+      // normaliza para { gabarito: { "1":"A", ... } } ou { respostas: {...} }
+      currentGabarito = root.gabarito ? root : (root.respostas ? { gabarito: root.respostas } : { gabarito: root });
+      status.innerHTML = `Gabarito carregado.`;
+      // habilita iniciar se tiver simulado tb
+      if (currentSimulado) startBtn.disabled = false;
+    } catch (err) {
+      alert('Erro ao ler gabarito: ' + err.message);
+    }
+  });
+
+  // carregar os defaults (arquivos enviados por você) automaticamente se houver acesso via fetch
+  (async function tryLoadDefaults(){
+    try {
+      const simJson = await fetchJson(DEFAULT_SIMULADO_PATH);
+      const simRoot = simJson.simulado_1 || Object.values(simJson)[0] || simJson;
+      currentSimulado = simRoot;
+      document.getElementById('simulado-status').innerText = `Simulado carregado: ${simRoot.prova || 'Sem título'} (${simRoot.questoes.length} questões) — (carregado do arquivo)`;
+      renderSimulado(simRoot);
+    } catch(e){
+      //console.log('não foi possível carregar simulado default', e);
+    }
+    try {
+      const gabJson = await fetchJson(DEFAULT_GABARITO_PATH);
+      // normaliza
+      const root = gabJson.gabarito_1 || Object.values(gabJson)[0] || gabJson;
+      currentGabarito = root.gabarito ? root : (root.respostas ? { gabarito: root.respostas } : { gabarito: root });
+      document.getElementById('simulado-status').innerText += ' | Gabarito carregado (arquivo).';
+    } catch(e){
+      //console.log('não foi possível carregar gabarito default', e);
+    }
+    // habilita botão se ambos carregados
+    startBtn.disabled = !(currentSimulado && currentGabarito);
+  })();
+
+  // iniciar prova (apenas foca na area renderizada; simulado já está renderizado ao carregar)
+  startBtn.addEventListener('click', () => {
+    if (!currentSimulado) return alert('Carregue o simulado primeiro.');
+    renderSimulado(currentSimulado);
+    document.getElementById('simulado-status').innerText = 'Prova iniciada. Marque suas respostas e clique em "Finalizar Prova / Corrigir".';
+  });
+
+})();
+
+document.getElementById("btnSimulados").addEventListener("click", function () {
+    const simulados = document.getElementById("simulados");
+    
+    // Exibe a área se estiver escondida
+    simulados.style.display = "block";
+
+    // Rola suavemente até ela
+    simulados.scrollIntoView({ behavior: "smooth" });
+});
 </script>
+
+</script>
+
+
 
 
  
